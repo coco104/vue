@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+    <link rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="hello">
+        {{ message }}
+    </div>
+    <div id="blog-post-demo">
+        <blog-post
+                v-for="post in posts"
+                v-bind:key="post.id"
+                v-bind:title="post.title"
+        ></blog-post>
+    </div>
+    <!--定义全局对象第一种方式-->
+    <div id="app">
+        <my-component></my-component>
+    </div>
+    <script>
+        var myComponent = Vue.extend({
+            template: "<h3>h3标签</h3>"
+        });
+        //将模板对象注册到组件中
+        Vue.component("my-component", myComponent);
+        var vm = new Vue({
+            el: "#app"
+        });
+    </script>
+    <!--定义全局对象第二种方式-->
+    <div id="app1">
+        <my-component></my-component>
+    </div>
+    <script>
+        Vue.component("my-component",{
+            template:"<h3>h3标签</h3>"
+        });
+        var vm = new Vue({
+            el:"#app1"
+        });
+    </script>
+
+    <div id="zuoyongyu">
+        <child>
+            <template slot-scope="props"><!--定义一个插槽-->
+                <li>{{props.value}}</li>
+            </template>
+        </child>
+        <child>
+            <template slot-scope="props">
+                <h1>{{props.value}}</h1><!--定义另一种-->
+            </template>
+        </child>
+    </div>
+    <script>
+        Vue.component('child',{
+            data: function(){
+                return {
+                    list:[1,2,3,4]
+                }
+            },
+            template: '\
+                        <div>\
+                            <ul>\
+                                <slot v-for="value in list" :value=value>\
+                                </slot>\
+                            </ul>\
+                        </div>\
+        ',
+        })
+        var vm2=new Vue({
+            el: '#zuoyongyu'
+        })
+    </script>
+
+
+    <!--具名插槽-->
+    <div id="chacao">
+        <chacao-component>
+            <p slot="footer">这里是footer</p>
+            <h1 slot="header">这里是header</h1>
+            <p>这是一个p标签</p>
+            <p>另一个p标签</p>
+            <p slot="footer">这里是footer</p>
+        </chacao-component>
+    </div>
+
+    <script>
+        Vue.component('chacao-component',{
+            template: '\
+                    <div class="container">\
+                    <header>\
+                        <slot name="header"></slot>\
+                    </header>\
+                    <main>\
+                        <slot></slot>\
+                    </main>\
+                    <footer>\
+                        <slot name="footer"></slot>\
+                    </footer>\
+                    </div>\
+                    ',
+        })
+        new Vue({
+            el:'#chacao'
+        })
+    </script>
+
+<!--动态组件-->
+    <div id="dongtai">
+        <component :is="nowdata"></component>
+        <button @click="handleChangeView('1')">切换到1</button>
+        <button @click="handleChangeView('2')">切换到2</button>
+        <button @click="handleChangeView('3')">切换到3</button>
+    </div>
+    <hr />
+    <div id="dongtai1">
+        <component :is="nowdata"></component>
+    </div>
+<!--异步组件：定义的时候什么都不做，只在组件需要渲染（组件第一次显示）的时候进行加载渲染并缓存，缓存是以备下次访问-->
+    <div id="yibu">
+        <child-component></child-component>
+    </div>
+    <script src="demo.js"></script>
+</body>
+</html>
